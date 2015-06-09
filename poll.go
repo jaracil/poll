@@ -65,6 +65,16 @@ func NewFile(fd uintptr, name string) (*File, error) {
 	return file, nil
 }
 
+// Open the named path for reading, writing or both, depnding on the
+// flags argument.
+func Open(name string, flags int) (*File, error) {
+	fd, err := syscall.Open(name, flags|syscall.O_CLOEXEC|syscall.O_NONBLOCK, 0666)
+	if err != nil {
+		return nil, err
+	}
+	return NewFile(uintptr(fd), name)
+}
+
 // NewFromFile returns a new *poll.File based on the given *os.File.
 // You don't need to worry about closing the *os.File, *poll.File already does it.
 func NewFromFile(of OsFile) (*File, error) {
