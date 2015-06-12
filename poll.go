@@ -182,9 +182,6 @@ func (f *File) Close() error {
 		return err
 	}
 	defer f.Unlock()
-	if f.closed {
-		return ErrClosed
-	}
 	f.closed = true
 	unregister(f)
 	if f.r.timer != nil {
