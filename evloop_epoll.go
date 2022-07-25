@@ -1,3 +1,4 @@
+//go:build linux && !select
 // +build linux,!select
 
 // Copyright (c) 2015, Jose Luis Aracil Gomez (pepe@diselpro.com)
@@ -55,8 +56,9 @@ func unregister(f *File) (err error) {
 
 func epollEv(ev *syscall.EpollEvent, write bool) {
 	var fdc *fdCtl
-
+	fdmLock.Lock()
 	fd := fdm[int(ev.Fd)]
+	fdmLock.Unlock()
 	if fd == nil {
 		// Drop event. Probably stale FD.
 		return
